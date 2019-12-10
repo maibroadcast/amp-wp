@@ -64,7 +64,7 @@ const Movable = ( props ) => {
 				setStyle( target );
 			} }
 			throttleDrag={ 0 }
-			onDragStart={ ( { set } ) => {
+			onDragStart={ ( { target, set } ) => {
 				set( frame.translate );
 			} }
 			onDragEnd={ ( { target } ) => {

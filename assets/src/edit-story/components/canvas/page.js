@@ -6,7 +6,7 @@ import styled from 'styled-components';
 /**
  * WordPress dependencies
  */
-import { useCallback, useEffect, useState } from '@wordpress/element';
+import { useCallback, useEffect, useRef, useState } from '@wordpress/element';
 
 /**
  * Internal dependencies
@@ -45,11 +45,13 @@ function Page() {
 	}, [ setBackgroundClickHandler, clearSelection ] );
 
 	const handleSelectElement = useCallback( ( elId, evt ) => {
+		console.log('handleSelectElement:', elId, evt);
 		if ( evt.metaKey ) {
 			toggleElementIdInSelection( elId );
 		} else {
 			selectElementById( elId );
 		}
+		setTargetEl(evt.currentTarget);
 		evt.stopPropagation();
 	}, [ toggleElementIdInSelection, selectElementById ] );
 
@@ -64,31 +66,30 @@ function Page() {
 				return (
 					<Element
 						key={ id }
+						draggable={ false }
 						onClick={ ( evt ) => handleSelectElement( id, evt ) }
+						onPointerDown={ ( evt ) => {
+							if ( ! isSelected ) {
+								handleSelectElement( id, evt );
+								// Setting target directly works, however, it doesn't get updated information from the selected elements state.
+								// setTargetEl( evt.currentTarget );
+							}
+						} }
 					>
 						<Comp
 							{ ...rest }
-							onPointerDown={ ( evt ) => {
-								if ( ! isSelected ) {
-									handleSelectElement( id, evt );
-									// Setting target directly works, however, it doesn't get updated information from the selected elements state.
-									// setTargetEl( evt.currentTarget );
-								}
-							} }
-							forwardedRef={ isSelected ? setTargetEl : null }
+							forwardedRef={ null }
 						/>
 					</Element>
 				);
 			} ) }
-			{ 1 === selectedElements.length && targetEl && (
 				<Movable
-					rotationAngle={ selectedElements[ 0 ].rotationAngle }
+					rotationAngle={ 1 === selectedElements.length ? selectedElements[ 0 ].rotationAngle : 0 }
 					targetEl={ targetEl }
-					type={ selectedElements[ 0 ].type }
-					x={ selectedElements[ 0 ].x }
-					y={ selectedElements[ 0 ].y }
+					type={ 1 === selectedElements.length ? selectedElements[ 0 ].type : null }
+					x={ 1 === selectedElements.length ? selectedElements[ 0 ].x : 0 }
+					y={ 1 === selectedElements.length ? selectedElements[ 0 ].y : 0 }
 				/>
-			) }
 		</Background>
 	);
 }

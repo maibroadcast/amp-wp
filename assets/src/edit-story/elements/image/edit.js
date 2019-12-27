@@ -14,9 +14,10 @@ import { useCallback, useState } from '@wordpress/element';
  */
 import { ElementWithPosition, ElementWithSize, ElementWithRotation, getBox } from '../shared';
 import { useStory } from '../../app';
+import { getImgProps, ImageWithScale } from './util';
 import EditPanMovable from './editPanMovable';
 import EditCropMovable from './editCropMovable';
-import { getImgProps, ImageWithScale } from './util';
+import ScalePanel from './scalePanel';
 
 const Element = styled.div`
 	${ ElementWithPosition }
@@ -99,6 +100,11 @@ function ImageEdit( { id, src, origRatio, width, height, x, y, scale, focalX, fo
 					imgHeight={ imgProps.height }
 				/>
 			) }
+
+			<ScalePanel
+				{ ...elementProps }
+				scale={ scale || 100 }
+				setProperties={ setProperties } />
 		</Element>
 	);
 }

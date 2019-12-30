@@ -7,13 +7,11 @@ import styled from 'styled-components';
 /**
  * Internal dependencies
  */
-import { ElementWithPosition, ElementWithSize, ElementWithRotation, getBox } from '../shared';
+import { ElementFillContent } from '../shared';
 import { getImgProps, ImageWithScale } from './util';
 
 const Element = styled.div`
-	${ ElementWithPosition }
-	${ ElementWithSize }
-	${ ElementWithRotation }
+	${ ElementFillContent }
 `;
 
 const ActualBox = styled.div`
@@ -38,6 +36,7 @@ const ActualBox = styled.div`
 const FadedImg = styled.img`
 	position: absolute;
 	opacity: 0.4;
+	pointer-events: none;
 	${ ImageWithScale }
 `;
 
@@ -46,11 +45,10 @@ const ActualImg = styled.img`
 	${ ImageWithScale }
 `;
 
-function ImageEdit( { src, origRatio, width, height, x, y, scale, focalX, focalY, rotationAngle, isFullbleed } ) {
-	const elementProps = getBox( { x, y, width, height, rotationAngle, isFullbleed } );
-	const imgProps = getImgProps( elementProps.width, elementProps.height, scale, focalX, focalY, origRatio );
+function ImageEdit( { src, origRatio, width, height, scale, focalX, focalY } ) {
+	const imgProps = getImgProps( width, height, scale, focalX, focalY, origRatio );
 	return (
-		<Element { ...elementProps }>
+		<Element>
 			<FadedImg src={ src } { ...imgProps } />
 			<ActualBox>
 				<ActualImg src={ src } { ...imgProps } />
@@ -64,11 +62,7 @@ ImageEdit.propTypes = {
 	origRatio: PropTypes.number.isRequired,
 	width: PropTypes.number.isRequired,
 	height: PropTypes.number.isRequired,
-	x: PropTypes.number.isRequired,
-	y: PropTypes.number.isRequired,
 	scale: PropTypes.number,
-	rotationAngle: PropTypes.number.isRequired,
-	isFullbleed: PropTypes.bool,
 	focalX: PropTypes.number,
 	focalY: PropTypes.number,
 };
